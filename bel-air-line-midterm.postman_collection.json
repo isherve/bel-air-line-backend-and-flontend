@@ -1,0 +1,2169 @@
+{
+  "info": {
+    "name": "BelAirLine Mid-Term",
+    "description": "Nizeyimana Kevine, 26859. Run in order on a freshly restored seed (see README).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Part A",
+      "item": [
+        {
+          "name": "A2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has flightNumber\", () => pm.expect(pm.response.text()).to.include(\"flightNumber\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/all"
+          }
+        },
+        {
+          "name": "A2 routes - save",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Route saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Route saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Temp route\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 routes - all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const found = pm.response.json().find(x => x.name === \"Temp route\"); pm.test(\"temp row listed\", () => pm.expect(found).to.exist); pm.collectionVariables.set(\"tempRouteId\", found.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/all"
+          }
+        },
+        {
+          "name": "A2 routes - get by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Temp route\", () => pm.expect(pm.response.text()).to.include(\"Temp route\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/{{tempRouteId}}"
+          }
+        },
+        {
+          "name": "A2 routes - update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Route updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Route updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes/update/{{tempRouteId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Temp route\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 routes - delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Route deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Route deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/delete/{{tempRouteId}}"
+          }
+        },
+        {
+          "name": "A2 routes - error 404 get",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The route with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The route with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 routes - error 404 update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The route with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The route with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/routes/update/{{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Temp route\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 routes - error 404 delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The route with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The route with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/delete/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 sales-desks - save",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Sales desk saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Sales desk saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales-desks/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deskNumber\": 99,\n  \"name\": \"Temp desk\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 sales-desks - all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const found = pm.response.json().find(x => x.name === \"Temp desk\"); pm.test(\"temp row listed\", () => pm.expect(found).to.exist); pm.collectionVariables.set(\"tempDeskId\", found.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/all"
+          }
+        },
+        {
+          "name": "A2 sales-desks - get by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Temp desk\", () => pm.expect(pm.response.text()).to.include(\"Temp desk\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/{{tempDeskId}}"
+          }
+        },
+        {
+          "name": "A2 sales-desks - update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Sales desk updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Sales desk updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales-desks/update/{{tempDeskId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deskNumber\": 99,\n  \"name\": \"Temp desk\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 sales-desks - delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Sales desk deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Sales desk deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/delete/{{tempDeskId}}"
+          }
+        },
+        {
+          "name": "A2 sales-desks - error 404 get",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The sales desk with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The sales desk with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 sales-desks - error 404 update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The sales desk with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The sales desk with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales-desks/update/{{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deskNumber\": 99,\n  \"name\": \"Temp desk\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 sales-desks - error 404 delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The sales desk with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The sales desk with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/delete/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 booking-agents - save",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Booking agent saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking agent saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/booking-agents/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Agent\",\n  \"email\": \"temp@belairline.rw\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 booking-agents - all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const found = pm.response.json().find(x => x.email === \"temp@belairline.rw\"); pm.test(\"temp row listed\", () => pm.expect(found).to.exist); pm.collectionVariables.set(\"tempAgentId\", found.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/all"
+          }
+        },
+        {
+          "name": "A2 booking-agents - get by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has temp@belairline.rw\", () => pm.expect(pm.response.text()).to.include(\"temp@belairline.rw\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{tempAgentId}}"
+          }
+        },
+        {
+          "name": "A2 booking-agents - update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking agent updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking agent updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/booking-agents/update/{{tempAgentId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Agent\",\n  \"email\": \"temp@belairline.rw\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 booking-agents - delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking agent deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking agent deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/delete/{{tempAgentId}}"
+          }
+        },
+        {
+          "name": "A2 booking-agents - error 404 get",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 booking-agents - error 404 update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/booking-agents/update/{{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Agent\",\n  \"email\": \"temp@belairline.rw\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 booking-agents - error 404 delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/delete/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 passengers - save",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Passenger saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Passenger saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/passengers/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Passenger\",\n  \"passportNumber\": \"PCTEMP01\",\n  \"email\": \"temp@example.com\",\n  \"phone\": \"+250788000000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 passengers - all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const found = pm.response.json().find(x => x.passportNumber === \"PCTEMP01\"); pm.test(\"temp row listed\", () => pm.expect(found).to.exist); pm.collectionVariables.set(\"tempPassengerId\", found.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/all"
+          }
+        },
+        {
+          "name": "A2 passengers - get by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has PCTEMP01\", () => pm.expect(pm.response.text()).to.include(\"PCTEMP01\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/{{tempPassengerId}}"
+          }
+        },
+        {
+          "name": "A2 passengers - update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Passenger updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Passenger updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/passengers/update/{{tempPassengerId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Passenger\",\n  \"passportNumber\": \"PCTEMP01\",\n  \"email\": \"temp@example.com\",\n  \"phone\": \"+250788000000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 passengers - delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Passenger deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Passenger deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/delete/{{tempPassengerId}}"
+          }
+        },
+        {
+          "name": "A2 passengers - error 404 get",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The passenger with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The passenger with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 passengers - error 404 update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The passenger with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The passenger with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/passengers/update/{{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Temp\",\n  \"lastName\": \"Passenger\",\n  \"passportNumber\": \"PCTEMP01\",\n  \"email\": \"temp@example.com\",\n  \"phone\": \"+250788000000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 passengers - error 404 delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The passenger with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The passenger with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/delete/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 bookings - save",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Booking saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2031-03-03\",\n  \"flightNumber\": \"WBTEMP\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentSandrineId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 bookings - all",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const found = pm.response.json().find(x => x.flightNumber === \"WBTEMP\"); pm.test(\"temp row listed\", () => pm.expect(found).to.exist); pm.collectionVariables.set(\"tempBookingId\", found.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/all"
+          }
+        },
+        {
+          "name": "A2 bookings - get by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has WBTEMP\", () => pm.expect(pm.response.text()).to.include(\"WBTEMP\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{tempBookingId}}"
+          }
+        },
+        {
+          "name": "A2 bookings - update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/update/{{tempBookingId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2031-03-03\",\n  \"flightNumber\": \"WBTEMP\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentSandrineId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 bookings - delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/delete/{{tempBookingId}}"
+          }
+        },
+        {
+          "name": "A2 bookings - error 404 get",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{unknownId}}"
+          }
+        },
+        {
+          "name": "A2 bookings - error 404 update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/update/{{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2031-03-03\",\n  \"flightNumber\": \"WBTEMP\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentSandrineId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "A2 bookings - error 404 delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/delete/{{unknownId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Part B",
+      "item": [
+        {
+          "name": "B1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"sorted by firstName\", () => pm.expect(pm.response.json().map(x => x.firstName)).to.eql([\"Aline\", \"Eric\"]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/by-last-name?lastName=ingabire"
+          }
+        },
+        {
+          "name": "B1 - empty list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"empty\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/by-last-name?lastName=nobody"
+          }
+        },
+        {
+          "name": "B2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().map(x => x.travelDate); pm.test(\"earliest first\", () => pm.expect(d).to.eql([...d].sort()));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/by-status?status=RESERVED"
+          }
+        },
+        {
+          "name": "B2 - error 400 bad status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/by-status?status=WRONG"
+          }
+        },
+        {
+          "name": "B3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const d = pm.response.json().map(x => x.travelDate); pm.test(\"five October bookings, in order\", () => { pm.expect(d.length).to.eql(5); pm.expect(d).to.eql([...d].sort()); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/between?start=2026-10-01&end=2026-10-31"
+          }
+        },
+        {
+          "name": "B3 - both dates inclusive",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"both ends returned\", () => pm.expect(pm.response.json().length).to.eql(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/between?start=2026-10-05&end=2026-10-12"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Part C",
+      "item": [
+        {
+          "name": "C1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"agents\", () => pm.expect(pm.response.json().map(x => x.firstName).sort()).to.eql([\"Claudine\", \"Sandrine\"]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/by-route?name=nairobi"
+          }
+        },
+        {
+          "name": "C1 - no match",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"empty\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/by-route?name=johannesburg"
+          }
+        },
+        {
+          "name": "C2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"desk 4\", () => pm.expect(pm.response.json().map(x => x.deskNumber)).to.eql([4]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/free"
+          }
+        },
+        {
+          "name": "C3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Johannesburg\", () => pm.expect(pm.response.json().map(x => x.name)).to.eql([\"Kigali - Johannesburg\"]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/routes/unused"
+          }
+        },
+        {
+          "name": "C4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const p = pm.response.json().map(x => x.passportNumber); pm.test(\"each passenger once\", () => { pm.expect(p.length).to.eql(4); pm.expect(new Set(p).size).to.eql(4); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/of-booking-agent/{{agentClaudineId}}"
+          }
+        },
+        {
+          "name": "C4 - error 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/passengers/of-booking-agent/{{unknownId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Part D",
+      "item": [
+        {
+          "name": "D1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Booking saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2027-01-15\",\n  \"status\": \"TICKETED\",\n  \"flightNumber\": \"WB500\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId2}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentYvesId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D1 - new booking is RESERVED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"status in the body was ignored\", () => pm.expect(pm.response.json().map(x => x.flightNumber)).to.include(\"WB500\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/by-status?status=RESERVED"
+          }
+        },
+        {
+          "name": "D1 - error 400 past date",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"body has Booking date cannot be in the past\", () => pm.expect(pm.response.text()).to.include(\"Booking date cannot be in the past\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2026-01-01\",\n  \"status\": \"TICKETED\",\n  \"flightNumber\": \"WB500\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId2}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentYvesId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D1 - error 409 agent busy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"body has Agent already has a booking on that date\", () => pm.expect(pm.response.text()).to.include(\"Agent already has a booking on that date\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/save",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2027-01-15\",\n  \"status\": \"TICKETED\",\n  \"flightNumber\": \"WB500\",\n  \"fareClass\": \"Economy\",\n  \"passenger\": {\n    \"id\": \"{{passengerId2}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentYvesId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking status updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking status updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{reservedBookingId}}/status?status=PAID"
+          }
+        },
+        {
+          "name": "D2 - PAID to TICKETED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking status updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking status updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{reservedBookingId}}/status?status=TICKETED"
+          }
+        },
+        {
+          "name": "D2 - error 400 not allowed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"body has Cannot change status from TICKETED to RESERVED\", () => pm.expect(pm.response.text()).to.include(\"Cannot change status from TICKETED to RESERVED\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{reservedBookingId}}/status?status=RESERVED"
+          }
+        },
+        {
+          "name": "D2 - error 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{unknownId}}/status?status=PAID"
+          }
+        },
+        {
+          "name": "D2 - PUT ignores status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Booking updated successfully\", () => pm.expect(pm.response.text()).to.include(\"Booking updated successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/update/{{reservedBookingId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelDate\": \"2026-11-03\",\n  \"status\": \"CANCELLED\",\n  \"flightNumber\": \"WB205\",\n  \"fareClass\": \"Business\",\n  \"passenger\": {\n    \"id\": \"{{passengerId}}\"\n  },\n  \"agent\": {\n    \"id\": \"{{agentClaudineId}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "D2 - status still TICKETED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"still TICKETED\", () => pm.expect(pm.response.json().status).to.eql(\"TICKETED\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/{{reservedBookingId}}"
+          }
+        },
+        {
+          "name": "D3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Route added to the booking agent\", () => pm.expect(pm.response.text()).to.include(\"Route added to the booking agent\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/routes/{{routeDubaiId}}"
+          }
+        },
+        {
+          "name": "D3 - keeps old routes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"both routes\", () => pm.expect(pm.response.json().routes.map(x => x.name).sort()).to.eql([\"Kigali - Brussels\", \"Kigali - Dubai\"]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}"
+          }
+        },
+        {
+          "name": "D3 - error 409 already has it",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"body has The booking agent already has that route\", () => pm.expect(pm.response.text()).to.include(\"The booking agent already has that route\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/routes/{{routeDubaiId}}"
+          }
+        },
+        {
+          "name": "D3 - error 404 agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{unknownId}}/routes/{{routeDubaiId}}"
+          }
+        },
+        {
+          "name": "D3 - error 404 route",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has That route does not exist\", () => pm.expect(pm.response.text()).to.include(\"That route does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/routes/{{unknownId}}"
+          }
+        },
+        {
+          "name": "D4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Sales desk changed successfully\", () => pm.expect(pm.response.text()).to.include(\"Sales desk changed successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/sales-desk?deskNumber=4"
+          }
+        },
+        {
+          "name": "D4 - old desk is free",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"desk 2 free\", () => pm.expect(pm.response.json().map(x => x.deskNumber)).to.eql([2]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sales-desks/free"
+          }
+        },
+        {
+          "name": "D4 - error 409 taken",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"body has That sales desk is taken by another booking agent\", () => pm.expect(pm.response.text()).to.include(\"That sales desk is taken by another booking agent\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/sales-desk?deskNumber=1"
+          }
+        },
+        {
+          "name": "D4 - error 404 desk",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The sales desk with that deskNumber does not exist\", () => pm.expect(pm.response.text()).to.include(\"The sales desk with that deskNumber does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{agentYvesId}}/sales-desk?deskNumber=99"
+          }
+        },
+        {
+          "name": "D4 - error 404 agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking agent with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking agent with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/booking-agents/{{unknownId}}/sales-desk?deskNumber=2"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Part E",
+      "item": [
+        {
+          "name": "E1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"body has Ancillary purchase saved successfully\", () => pm.expect(pm.response.text()).to.include(\"Ancillary purchase saved successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/ancillary-purchases/save?bookingId={{ticketedBookingId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemName\": \"Extra baggage 23kg\",\n  \"note\": \"Paid by mobile money\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "E1 - error 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The booking with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The booking with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/ancillary-purchases/save?bookingId={{unknownId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemName\": \"Extra baggage 23kg\",\n  \"note\": \"Paid by mobile money\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "E1 - error 400 not TICKETED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"body has Ancillary purchases are only for TICKETED bookings\", () => pm.expect(pm.response.text()).to.include(\"Ancillary purchases are only for TICKETED bookings\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/ancillary-purchases/save?bookingId={{reservedBookingId2}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemName\": \"Extra baggage 23kg\",\n  \"note\": \"Paid by mobile money\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "E2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const rows = pm.response.json(); pm.test(\"three purchases with purchaseDate\", () => { pm.expect(rows.length).to.eql(3); pm.expect(rows[0].purchaseDate).to.exist; }); pm.collectionVariables.set(\"purchaseId\", rows[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/ancillary-purchases/passenger/{{passportNumber}}"
+          }
+        },
+        {
+          "name": "E2 - empty list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"empty\", () => pm.expect(pm.response.json()).to.eql([]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/ancillary-purchases/passenger/PC000000"
+          }
+        },
+        {
+          "name": "E3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has Ancillary purchase deleted successfully\", () => pm.expect(pm.response.text()).to.include(\"Ancillary purchase deleted successfully\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/ancillary-purchases/delete/{{purchaseId}}"
+          }
+        },
+        {
+          "name": "E3 - error 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body has The ancillary purchase with that id does not exist\", () => pm.expect(pm.response.text()).to.include(\"The ancillary purchase with that id does not exist\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/ancillary-purchases/delete/{{unknownId}}"
+          }
+        },
+        {
+          "name": "E3 - error 409 booking protected",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"body has That booking has ancillary purchases, delete them first\", () => pm.expect(pm.response.text()).to.include(\"That booking has ancillary purchases, delete them first\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/delete/{{bookingWithPurchasesId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Part F",
+      "item": [
+        {
+          "name": "F1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"rows of status and count\", () => { const r = pm.response.json(); pm.expect(r[0].length).to.eql(2); pm.expect(r[0][1]).to.be.a(\"number\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/stats/by-status"
+          }
+        },
+        {
+          "name": "F2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has 1 bookings cancelled\", () => pm.expect(pm.response.text()).to.include(\"1 bookings cancelled\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/cancel-day?bookingAgentId={{agentClaudineId}}&date=2026-10-20"
+          }
+        },
+        {
+          "name": "F2 - nothing left to cancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has 0 bookings cancelled\", () => pm.expect(pm.response.text()).to.include(\"0 bookings cancelled\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/cancel-day?bookingAgentId={{agentClaudineId}}&date=2026-10-20"
+          }
+        },
+        {
+          "name": "F2 - TICKETED is kept",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body has 0 bookings cancelled\", () => pm.expect(pm.response.text()).to.include(\"0 bookings cancelled\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/cancel-day?bookingAgentId={{agentSandrineId}}&date=2026-11-22"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bonus",
+      "item": [
+        {
+          "name": "BONUS dashboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"keys in order\", () => pm.expect(Object.keys(pm.response.json())).to.eql([\"passengers\", \"agents\", \"freeDesks\", \"bookingsToday\", \"reserved\", \"purchases\"]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/dashboard/summary"
+          }
+        },
+        {
+          "name": "BONUS page",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json(); pm.test(\"page\", () => { pm.expect(j.content.length).to.eql(5); pm.expect(j.totalPages).to.eql(3); pm.expect(j.totalElements).to.eql(11); const d = j.content.map(x => x.travelDate); pm.expect(d).to.eql([...d].sort().reverse()); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/bookings/page?page=0&size=5&sort=travelDate,desc"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "unknownId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "passportNumber",
+      "value": "PC123456"
+    },
+    {
+      "key": "passengerId",
+      "value": "7be1dd14-280d-4d1d-89cc-c55830f12a77"
+    },
+    {
+      "key": "passengerId2",
+      "value": "d39149eb-2620-4b42-9d66-794267362de2"
+    },
+    {
+      "key": "agentClaudineId",
+      "value": "a96a9dd5-53a7-4352-ab02-9bda4b5c21c6"
+    },
+    {
+      "key": "agentYvesId",
+      "value": "bd0c5b66-6930-4c10-9bf8-ceb7143a56cf"
+    },
+    {
+      "key": "agentSandrineId",
+      "value": "b1df6145-7b56-4f97-ab98-37445e6a9bb5"
+    },
+    {
+      "key": "routeDubaiId",
+      "value": "22e74096-46d3-48af-a355-756612c9f1ff"
+    },
+    {
+      "key": "reservedBookingId",
+      "value": "39306efd-8095-4c84-b575-7d0014df8a7a"
+    },
+    {
+      "key": "reservedBookingId2",
+      "value": "63bd9862-f14b-4c48-981d-f72c38caad4d"
+    },
+    {
+      "key": "ticketedBookingId",
+      "value": "a6d45bb3-d39f-458d-95c3-696bc551c65e"
+    },
+    {
+      "key": "bookingWithPurchasesId",
+      "value": "aeeb8413-4ead-4eb9-8499-9e1aa1bcd9a5"
+    },
+    {
+      "key": "purchaseId",
+      "value": ""
+    },
+    {
+      "key": "tempRouteId",
+      "value": ""
+    },
+    {
+      "key": "tempDeskId",
+      "value": ""
+    },
+    {
+      "key": "tempAgentId",
+      "value": ""
+    },
+    {
+      "key": "tempPassengerId",
+      "value": ""
+    },
+    {
+      "key": "tempBookingId",
+      "value": ""
+    }
+  ]
+}
