@@ -6,6 +6,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,6 +65,14 @@ public class BookingController {
     @GetMapping("/stats/by-status")
     public ResponseEntity<List<Object[]>> getBookingCountsPerStatus() {
         return new ResponseEntity<>(bookingService.getBookingCountsPerStatus(), HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity<Page<Booking>> getBookingsPage(@RequestParam int page, @RequestParam int size, @RequestParam String sort) {
+        String[] sortParts = sort.split(",");
+        Sort.Direction direction = sortParts.length > 1 ? Sort.Direction.fromString(sortParts[1]) : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortParts[0]));
+        return new ResponseEntity<>(bookingService.getBookingsPage(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

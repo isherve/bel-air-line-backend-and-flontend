@@ -21,6 +21,10 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
     boolean existsByAgentAndTravelDateAndStatusNot(BookingAgent agent, LocalDate travelDate, BookingStatus status);
 
+    long countByTravelDate(LocalDate travelDate);
+
+    long countByStatus(BookingStatus status);
+
     @Query("SELECT e.status, COUNT(e) FROM Booking e GROUP BY e.status")
     List<Object[]> countBookingsPerStatus();
 
