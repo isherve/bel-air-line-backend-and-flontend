@@ -1,5 +1,6 @@
 package com.belairline.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.belairline.model.Booking;
+import com.belairline.model.BookingStatus;
 import com.belairline.service.BookingService;
 
 @RestController
@@ -35,6 +38,18 @@ public class BookingController {
     @GetMapping("/all")
     public ResponseEntity<List<Booking>> getAllBookings() {
         return new ResponseEntity<>(bookingService.getAllBookings(), HttpStatus.OK);
+    }
+
+    @GetMapping("/by-status")
+    public ResponseEntity<List<Booking>> getBookingsByStatus(@RequestParam BookingStatus status) {
+        return new ResponseEntity<>(bookingService.getBookingsByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping("/between")
+    public ResponseEntity<List<Booking>> getBookingsBetween(@RequestParam String start, @RequestParam String end) {
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);
+        return new ResponseEntity<>(bookingService.getBookingsBetween(startDate, endDate), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

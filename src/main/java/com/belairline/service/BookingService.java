@@ -1,5 +1,6 @@
 package com.belairline.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.belairline.model.Booking;
+import com.belairline.model.BookingStatus;
 import com.belairline.repository.BookingRepository;
 
 @Service
@@ -51,5 +53,13 @@ public class BookingService {
         }
         bookingRepository.deleteById(id);
         return "Booking deleted successfully";
+    }
+
+    public List<Booking> getBookingsByStatus(BookingStatus status) {
+        return bookingRepository.findByStatusOrderByTravelDateAsc(status);
+    }
+
+    public List<Booking> getBookingsBetween(LocalDate start, LocalDate end) {
+        return bookingRepository.findByTravelDateBetweenOrderByTravelDateAsc(start, end);
     }
 }

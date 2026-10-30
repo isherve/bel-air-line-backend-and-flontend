@@ -51,4 +51,8 @@ public class PassengerService {
         passengerRepository.deleteById(id);
         return "Passenger deleted successfully";
     }
+
+    public List<Passenger> getPassengersByLastName(String lastName) {
+        return passengerRepository.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
 }

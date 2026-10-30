@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.belairline.model.Passenger;
@@ -35,6 +36,11 @@ public class PassengerController {
     @GetMapping("/all")
     public ResponseEntity<List<Passenger>> getAllPassengers() {
         return new ResponseEntity<>(passengerService.getAllPassengers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/by-last-name")
+    public ResponseEntity<List<Passenger>> getPassengersByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(passengerService.getPassengersByLastName(lastName), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
