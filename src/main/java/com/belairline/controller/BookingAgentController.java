@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -57,6 +58,28 @@ public class BookingAgentController {
         String message = bookingAgentService.updateBookingAgent(id, bookingAgent);
         if (message.equals("Booking agent updated successfully")) {
             return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{bookingAgentId}/routes/{routeId}")
+    public ResponseEntity<String> addRouteToBookingAgent(@PathVariable UUID bookingAgentId, @PathVariable UUID routeId) {
+        String message = bookingAgentService.addRouteToBookingAgent(bookingAgentId, routeId);
+        if (message.equals("Route added to the booking agent")) {
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.equals("The booking agent already has that route")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("/{bookingAgentId}/sales-desk")
+    public ResponseEntity<String> changeSalesDesk(@PathVariable UUID bookingAgentId, @RequestParam int deskNumber) {
+        String message = bookingAgentService.changeSalesDesk(bookingAgentId, deskNumber);
+        if (message.equals("Sales desk changed successfully")) {
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.equals("That sales desk is taken by another booking agent")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }

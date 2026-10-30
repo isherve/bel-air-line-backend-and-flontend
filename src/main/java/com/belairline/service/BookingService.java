@@ -19,6 +19,13 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     public String saveBooking(Booking booking) {
+        if (booking.getTravelDate().isBefore(LocalDate.now())) {
+            return "Booking date cannot be in the past";
+        }
+        if (bookingRepository.existsByAgentAndTravelDateAndStatusNot(booking.getAgent(), booking.getTravelDate(), BookingStatus.CANCELLED)) {
+            return "Agent already has a booking on that date";
+        }
+        booking.setStatus(BookingStatus.RESERVED);
         bookingRepository.save(booking);
         return "Booking saved successfully";
     }
@@ -38,7 +45,6 @@ public class BookingService {
         }
         Booking booking = existing.get();
         booking.setTravelDate(newBooking.getTravelDate());
-        booking.setStatus(newBooking.getStatus());
         booking.setFlightNumber(newBooking.getFlightNumber());
         booking.setFareClass(newBooking.getFareClass());
         booking.setPassenger(newBooking.getPassenger());
@@ -53,6 +59,27 @@ public class BookingService {
         }
         bookingRepository.deleteById(id);
         return "Booking deleted successfully";
+    }
+
+    public String updateBookingStatus(UUID id, BookingStatus newStatus) {
+        Optional<Booking> existing = bookingRepository.findById(id);
+        if (existing.isEmpty()) {
+            return "The booking with that id does not exist";
+        }
+        Booking booking = existing.get();
+        BookingStatus current = booking.getStatus();
+        boolean allowed = false;
+        if (current == BookingStatus.RESERVED) {
+            allowed = newStatus == BookingStatus.PAID || newStatus == BookingStatus.CANCELLED;
+        } else if (current == BookingStatus.PAID) {
+            allowed = newStatus == BookingStatus.TICKETED || newStatus == BookingStatus.CANCELLED;
+        }
+        if (!allowed) {
+            return "Cannot change status from " + current + " to " + newStatus;
+        }
+        booking.setStatus(newStatus);
+        bookingRepository.save(booking);
+        return "Booking status updated successfully";
     }
 
     public List<Booking> getBookingsByStatus(BookingStatus status) {

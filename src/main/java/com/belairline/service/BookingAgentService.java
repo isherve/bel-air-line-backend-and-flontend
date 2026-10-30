@@ -6,15 +6,26 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.belairline.model.BookingAgent;
+import com.belairline.model.Route;
+import com.belairline.model.SalesDesk;
 import com.belairline.repository.BookingAgentRepository;
+import com.belairline.repository.RouteRepository;
+import com.belairline.repository.SalesDeskRepository;
 
 @Service
 public class BookingAgentService {
 
     @Autowired
     private BookingAgentRepository bookingAgentRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private SalesDeskRepository salesDeskRepository;
 
     public String saveBookingAgent(BookingAgent bookingAgent) {
         bookingAgentRepository.save(bookingAgent);
@@ -55,6 +66,49 @@ public class BookingAgentService {
         }
         bookingAgentRepository.deleteById(id);
         return "Booking agent deleted successfully";
+    }
+
+    // One transaction so the route and the routes list share the same objects, which contains() compares.
+    @Transactional
+    public String addRouteToBookingAgent(UUID bookingAgentId, UUID routeId) {
+        Optional<BookingAgent> existingAgent = bookingAgentRepository.findById(bookingAgentId);
+        if (existingAgent.isEmpty()) {
+            return "The booking agent with that id does not exist";
+        }
+        Optional<Route> existingRoute = routeRepository.findById(routeId);
+        if (existingRoute.isEmpty()) {
+            return "That route does not exist";
+        }
+        BookingAgent bookingAgent = existingAgent.get();
+        Route route = existingRoute.get();
+        if (bookingAgent.getRoutes().contains(route)) {
+            return "The booking agent already has that route";
+        }
+        bookingAgent.getRoutes().add(route);
+        bookingAgentRepository.save(bookingAgent);
+        return "Route added to the booking agent";
+    }
+
+    public String changeSalesDesk(UUID bookingAgentId, int deskNumber) {
+        Optional<BookingAgent> existingAgent = bookingAgentRepository.findById(bookingAgentId);
+        if (existingAgent.isEmpty()) {
+            return "The booking agent with that id does not exist";
+        }
+        Optional<SalesDesk> existingDesk = salesDeskRepository.findByDeskNumber(deskNumber);
+        if (existingDesk.isEmpty()) {
+            return "The sales desk with that deskNumber does not exist";
+        }
+        BookingAgent bookingAgent = existingAgent.get();
+        SalesDesk salesDesk = existingDesk.get();
+        // Asking for the desk the agent already sits at is not a clash with another agent.
+        SalesDesk currentDesk = bookingAgent.getSalesDesk();
+        boolean sameDesk = currentDesk != null && currentDesk.getId().equals(salesDesk.getId());
+        if (!sameDesk && bookingAgentRepository.existsBySalesDesk(salesDesk)) {
+            return "That sales desk is taken by another booking agent";
+        }
+        bookingAgent.setSalesDesk(salesDesk);
+        bookingAgentRepository.save(bookingAgent);
+        return "Sales desk changed successfully";
     }
 
     public List<BookingAgent> getBookingAgentsByRoute(String name) {
