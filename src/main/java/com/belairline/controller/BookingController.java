@@ -58,6 +58,11 @@ public class BookingController {
         return new ResponseEntity<>(bookingService.getBookingsBetween(startDate, endDate), HttpStatus.OK);
     }
 
+    @GetMapping("/stats/by-status")
+    public ResponseEntity<List<Object[]>> getBookingCountsPerStatus() {
+        return new ResponseEntity<>(bookingService.getBookingCountsPerStatus(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookingById(@PathVariable UUID id) {
         Optional<Booking> booking = bookingService.getBookingById(id);
@@ -74,6 +79,12 @@ public class BookingController {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("/cancel-day")
+    public ResponseEntity<String> cancelBookingsOfDay(@RequestParam UUID bookingAgentId, @RequestParam String date) {
+        String message = bookingService.cancelBookingsOfDay(bookingAgentId, LocalDate.parse(date));
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}/status")

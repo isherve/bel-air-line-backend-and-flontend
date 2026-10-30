@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.belairline.model.Booking;
 import com.belairline.model.BookingStatus;
@@ -88,6 +89,16 @@ public class BookingService {
         booking.setStatus(newStatus);
         bookingRepository.save(booking);
         return "Booking status updated successfully";
+    }
+
+    public List<Object[]> getBookingCountsPerStatus() {
+        return bookingRepository.countBookingsPerStatus();
+    }
+
+    @Transactional
+    public String cancelBookingsOfDay(UUID bookingAgentId, LocalDate date) {
+        int cancelled = bookingRepository.cancelBookingsOfDay(bookingAgentId, date);
+        return cancelled + " bookings cancelled";
     }
 
     public List<Booking> getBookingsByStatus(BookingStatus status) {
