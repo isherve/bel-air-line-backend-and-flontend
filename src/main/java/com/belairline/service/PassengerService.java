@@ -55,4 +55,8 @@ public class PassengerService {
     public List<Passenger> getPassengersByLastName(String lastName) {
         return passengerRepository.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
     }
+
+    public List<Passenger> getPassengersOfBookingAgent(UUID bookingAgentId) {
+        return passengerRepository.findPassengersOfBookingAgent(bookingAgentId);
+    }
 }

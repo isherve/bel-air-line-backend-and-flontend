@@ -48,4 +48,8 @@ public class SalesDeskService {
         salesDeskRepository.deleteById(id);
         return "Sales desk deleted successfully";
     }
+
+    public List<SalesDesk> getFreeSalesDesks() {
+        return salesDeskRepository.findFreeSalesDesks();
+    }
 }

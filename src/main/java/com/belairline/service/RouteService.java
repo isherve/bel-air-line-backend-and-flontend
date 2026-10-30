@@ -47,4 +47,8 @@ public class RouteService {
         routeRepository.deleteById(id);
         return "Route deleted successfully";
     }
+
+    public List<Route> getUnusedRoutes() {
+        return routeRepository.findUnusedRoutes();
+    }
 }

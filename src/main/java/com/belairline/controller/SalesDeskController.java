@@ -37,6 +37,11 @@ public class SalesDeskController {
         return new ResponseEntity<>(salesDeskService.getAllSalesDesks(), HttpStatus.OK);
     }
 
+    @GetMapping("/free")
+    public ResponseEntity<List<SalesDesk>> getFreeSalesDesks() {
+        return new ResponseEntity<>(salesDeskService.getFreeSalesDesks(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getSalesDeskById(@PathVariable UUID id) {
         Optional<SalesDesk> salesDesk = salesDeskService.getSalesDeskById(id);

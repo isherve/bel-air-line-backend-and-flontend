@@ -37,6 +37,11 @@ public class RouteController {
         return new ResponseEntity<>(routeService.getAllRoutes(), HttpStatus.OK);
     }
 
+    @GetMapping("/unused")
+    public ResponseEntity<List<Route>> getUnusedRoutes() {
+        return new ResponseEntity<>(routeService.getUnusedRoutes(), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getRouteById(@PathVariable UUID id) {
         Optional<Route> route = routeService.getRouteById(id);

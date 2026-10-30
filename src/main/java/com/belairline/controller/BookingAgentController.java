@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.belairline.model.BookingAgent;
@@ -35,6 +36,11 @@ public class BookingAgentController {
     @GetMapping("/all")
     public ResponseEntity<List<BookingAgent>> getAllBookingAgents() {
         return new ResponseEntity<>(bookingAgentService.getAllBookingAgents(), HttpStatus.OK);
+    }
+
+    @GetMapping("/by-route")
+    public ResponseEntity<List<BookingAgent>> getBookingAgentsByRoute(@RequestParam String name) {
+        return new ResponseEntity<>(bookingAgentService.getBookingAgentsByRoute(name), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

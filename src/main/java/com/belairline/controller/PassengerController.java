@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.belairline.model.Passenger;
+import com.belairline.service.BookingAgentService;
 import com.belairline.service.PassengerService;
 
 @RestController
@@ -26,6 +27,9 @@ public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+
+    @Autowired
+    private BookingAgentService bookingAgentService;
 
     @PostMapping("/save")
     public ResponseEntity<String> savePassenger(@RequestBody Passenger passenger) {
@@ -41,6 +45,14 @@ public class PassengerController {
     @GetMapping("/by-last-name")
     public ResponseEntity<List<Passenger>> getPassengersByLastName(@RequestParam String lastName) {
         return new ResponseEntity<>(passengerService.getPassengersByLastName(lastName), HttpStatus.OK);
+    }
+
+    @GetMapping("/of-booking-agent/{bookingAgentId}")
+    public ResponseEntity<?> getPassengersOfBookingAgent(@PathVariable UUID bookingAgentId) {
+        if (bookingAgentService.getBookingAgentById(bookingAgentId).isEmpty()) {
+            return new ResponseEntity<>("The booking agent with that id does not exist", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(passengerService.getPassengersOfBookingAgent(bookingAgentId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

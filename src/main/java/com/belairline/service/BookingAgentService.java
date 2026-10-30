@@ -56,4 +56,8 @@ public class BookingAgentService {
         bookingAgentRepository.deleteById(id);
         return "Booking agent deleted successfully";
     }
+
+    public List<BookingAgent> getBookingAgentsByRoute(String name) {
+        return bookingAgentRepository.findByRouteName(name);
+    }
 }
