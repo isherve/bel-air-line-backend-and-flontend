@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.belairline.model.Booking;
 import com.belairline.model.BookingStatus;
+import com.belairline.repository.AncillaryPurchaseRepository;
 import com.belairline.repository.BookingRepository;
 
 @Service
@@ -17,6 +18,9 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private AncillaryPurchaseRepository ancillaryPurchaseRepository;
 
     public String saveBooking(Booking booking) {
         if (booking.getTravelDate().isBefore(LocalDate.now())) {
@@ -54,8 +58,12 @@ public class BookingService {
     }
 
     public String deleteBooking(UUID id) {
-        if (!bookingRepository.existsById(id)) {
+        Optional<Booking> existing = bookingRepository.findById(id);
+        if (existing.isEmpty()) {
             return "The booking with that id does not exist";
+        }
+        if (ancillaryPurchaseRepository.existsByBooking(existing.get())) {
+            return "That booking has ancillary purchases, delete them first";
         }
         bookingRepository.deleteById(id);
         return "Booking deleted successfully";

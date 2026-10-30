@@ -92,6 +92,8 @@ public class BookingController {
         String message = bookingService.deleteBooking(id);
         if (message.equals("Booking deleted successfully")) {
             return new ResponseEntity<>(message, HttpStatus.OK);
+        } else if (message.equals("That booking has ancillary purchases, delete them first")) {
+            return new ResponseEntity<>(message, HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
